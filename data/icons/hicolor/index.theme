@@ -1,0 +1,11 @@
+[Icon Theme]
+Name=hicolor
+Comment=Villblomst-ikoner
+Directories=scalable/apps
+
+[scalable/apps]
+Size=256
+Context=Applications
+Type=Scalable
+MinSize=1
+MaxSize=512
