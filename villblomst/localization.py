@@ -92,6 +92,14 @@ class Status:
             return loc.t("status.favoriteRemoved")
         if k == "favoriteApplied":
             return loc.t("status.favoriteApplied")
+        if k == "savingFavorite":
+            return loc.t("status.savingFavorite") % a[0]
+        if k == "favoriteSaved":
+            return loc.t("status.favoriteSaved")
+        if k == "savingFavorites":
+            return loc.t("status.savingFavorites") % (a[0], a[1])
+        if k == "favoritesSaved":
+            return loc.t("status.favoritesSaved") % a[0]
         if k == "screenProgress":
             return loc.t("status.screenProgress") % (a[0], a[1])
         if k == "perScreenApplied":
@@ -118,6 +126,10 @@ NORWEGIAN = {
     "settings.perscreen.subtitle": "La hver skjerm få sitt eget tilfeldige bilde",
     "settings.perscreen.toggle": "Egen bakgrunn per skjerm",
     "settings.general.title": "Generelt",
+    "settings.favorites.title": "Favoritter",
+    "settings.favorites.subtitle": "Lagring av favorittbilder",
+    "settings.favorites.toggle": "Lagre favorittbilder lokalt",
+    "settings.favorites.description": "Laster ned og lagrer favorittbildene i en egen lokal mappe, slik at de alltid er tilgjengelige – også uten nett.",
     "settings.language.title": "Språk",
     "settings.language.subtitle": "Velg språk for grensesnittet",
     "button.new": "Ny bakgrunn",
@@ -135,6 +147,10 @@ NORWEGIAN = {
     "status.favoriteAdded": "Lagt til i favoritter",
     "status.favoriteRemoved": "Fjernet fra favoritter",
     "status.favoriteApplied": "Favoritten er satt som bakgrunn",
+    "status.savingFavorite": "Lagrer «%s» lokalt …",
+    "status.favoriteSaved": "Favorittbildet er lagret lokalt",
+    "status.savingFavorites": "Lagrer favorittbilde %d av %d lokalt …",
+    "status.favoritesSaved": "Lagret %d favorittbilder lokalt",
     "status.screenProgress": "Henter bilde %d av %d …",
     "status.perScreenApplied": "Egen bakgrunn satt på %d skjermer",
     "status.screenAssigned": "Favoritt satt på skjerm %d",
@@ -180,6 +196,10 @@ ENGLISH = {
     "settings.perscreen.subtitle": "Give each screen its own random image",
     "settings.perscreen.toggle": "Separate wallpaper per screen",
     "settings.general.title": "General",
+    "settings.favorites.title": "Favorites",
+    "settings.favorites.subtitle": "Favorite image storage",
+    "settings.favorites.toggle": "Store favorite images locally",
+    "settings.favorites.description": "Downloads and stores favorite images in a dedicated local folder, so they are always available – even offline.",
     "settings.language.title": "Language",
     "settings.language.subtitle": "Choose the interface language",
     "button.new": "New wallpaper",
@@ -197,6 +217,10 @@ ENGLISH = {
     "status.favoriteAdded": "Added to favorites",
     "status.favoriteRemoved": "Removed from favorites",
     "status.favoriteApplied": "Favorite applied as wallpaper",
+    "status.savingFavorite": "Saving “%s” locally …",
+    "status.favoriteSaved": "Favorite image saved locally",
+    "status.savingFavorites": "Saving favorite image %d of %d locally …",
+    "status.favoritesSaved": "Saved %d favorite images locally",
     "status.screenProgress": "Fetching image %d of %d …",
     "status.perScreenApplied": "Separate wallpapers set on %d screens",
     "status.screenAssigned": "Favorite set on screen %d",

@@ -14,6 +14,7 @@ DATA_HOME = Path(
 ) / "villblomst"
 
 IMAGE_DIR = DATA_HOME / "Wallpapers"
+FAVORITES_DIR = DATA_HOME / "Favorites"
 THUMB_DIR = DATA_HOME / "Thumbnails"
 COMPOSITE_FILE = DATA_HOME / "composite.png"
 POOL_FILE = DATA_HOME / "pool.json"
@@ -41,5 +42,5 @@ INK = "#2e3d30"
 
 def ensure_dirs() -> None:
     """Oppretter alle datamapper appen trenger."""
-    for directory in (DATA_HOME, IMAGE_DIR, THUMB_DIR):
+    for directory in (DATA_HOME, IMAGE_DIR, FAVORITES_DIR, THUMB_DIR):
         directory.mkdir(parents=True, exist_ok=True)

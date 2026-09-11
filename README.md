@@ -17,7 +17,8 @@ with GTK4/libadwaita for GNOME-based desktops such as **Zorin OS**.
   animals, city, landscape, ocean, space, autumn/winter, or everything).
 - **Bilingual interface** – Norwegian and English, switchable at runtime with a
   system-language default.
-- **Favorites** – save the wallpapers you like and re-apply them any time.
+- **Favorites** – save the wallpapers you like and re-apply them any time, with
+  an option to store the full-size images in a local folder for offline use.
 - **Multiple screens** – give each screen its own random wallpaper, or assign a
   saved favorite to a specific screen.
 - **Sets the desktop background** on GNOME via `gsettings`.
@@ -131,6 +132,19 @@ install.sh             One-step install
 run.sh                 Run from source
 ```
 
+## Favorites
+
+Tap the heart on the preview to save the current wallpaper. Saved wallpapers
+appear under the heart button in the header, where you can re-apply them as the
+desktop background or remove them. Favorite metadata is stored in
+`~/.local/share/villblomst/favorites.json`.
+
+Turn on **Store favorite images locally** in Settings to download and keep the
+full-size image of every favorite in
+`~/.local/share/villblomst/Favorites/`, so a favorite can be re-applied without
+an internet connection. Enabling the option also downloads any existing
+favorites that are missing a local copy.
+
 ## Multiple screens
 
 GNOME does not natively support a different wallpaper per monitor. Villblomst
@@ -143,6 +157,7 @@ best on X11 and when the monitors are laid out side by side.
 Everything is stored under `~/.local/share/villblomst/`:
 
 - `Wallpapers/` – downloaded images
+- `Favorites/` – full-size images of saved favorites
 - `pool.json` – cached wallpaper pool (7 days)
 - `state.json` – the last applied wallpaper
 - `favorites.json` – saved favorites

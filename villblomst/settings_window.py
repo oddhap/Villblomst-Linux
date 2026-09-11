@@ -134,6 +134,32 @@ class SettingsWindow(Adw.Window):
         self.body.append(row)
         self.body.append(Gtk.Separator())
 
+        # Favoritter
+        self._section(
+            self.loc.t("settings.favorites.title"),
+            self.loc.t("settings.favorites.subtitle"),
+        )
+        fav_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        fav_row.add_css_class("theme-card")
+        fav_row.append(icons.image("heart", config.LEAF_DEEP, 18))
+        fav_text = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
+        fav_text.set_hexpand(True)
+        fav_title = Gtk.Label(label=self.loc.t("settings.favorites.toggle"), xalign=0)
+        fav_desc = Gtk.Label(label=self.loc.t("settings.favorites.description"), xalign=0)
+        fav_desc.add_css_class("hint-label")
+        fav_desc.set_wrap(True)
+        fav_desc.set_max_width_chars(46)
+        fav_text.append(fav_title)
+        fav_text.append(fav_desc)
+        fav_row.append(fav_text)
+        fav_switch = Gtk.Switch()
+        fav_switch.set_active(self.store.save_favorites_locally)
+        fav_switch.set_valign(Gtk.Align.CENTER)
+        fav_switch.connect("state-set", self._on_save_favorites)
+        fav_row.append(fav_switch)
+        self.body.append(fav_row)
+        self.body.append(Gtk.Separator())
+
         # Språk
         self._section(
             self.loc.t("settings.language.title"), self.loc.t("settings.language.subtitle")
@@ -193,4 +219,9 @@ class SettingsWindow(Adw.Window):
     def _on_per_screen(self, switch, state):
         if state != self.store.per_screen:
             self.store.toggle_per_screen()
+        return False
+
+    def _on_save_favorites(self, switch, state):
+        if state != self.store.save_favorites_locally:
+            self.store.toggle_save_favorites_locally()
         return False

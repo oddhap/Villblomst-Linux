@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import shutil
 import threading
 import time
 from dataclasses import asdict, dataclass
@@ -37,6 +38,7 @@ class Store:
         self.source = "bing"
         self.theme_id = "alle"
         self.per_screen = False
+        self.save_favorites_locally = True
         self.language = AppLanguage.SYSTEM
 
         # Tilstand
@@ -118,7 +120,13 @@ class Store:
         )
 
     def favorite_file(self, favorite: Favorite) -> Path:
-        return config.IMAGE_DIR / f"{favorite.slug}.jpg"
+        target = config.FAVORITES_DIR / f"{favorite.slug}.jpg"
+        if target.exists():
+            return target
+        legacy = config.IMAGE_DIR / f"{favorite.slug}.jpg"
+        if legacy.exists():
+            return legacy
+        return target
 
     # --------------------------------------------------------- innstillinger
     def _load_settings(self) -> None:
@@ -129,6 +137,9 @@ class Store:
         self.source = data.get("source", self.source)
         self.theme_id = data.get("theme", self.theme_id)
         self.per_screen = bool(data.get("per_screen", self.per_screen))
+        self.save_favorites_locally = bool(
+            data.get("save_favorites_locally", self.save_favorites_locally)
+        )
         self.language = AppLanguage(data.get("language", self.language.value))
         self.loc.language = self.language
 
@@ -137,6 +148,7 @@ class Store:
             "source": self.source,
             "theme": self.theme_id,
             "per_screen": self.per_screen,
+            "save_favorites_locally": self.save_favorites_locally,
             "language": self.language.value,
         }
         try:
@@ -162,6 +174,15 @@ class Store:
         self.per_screen = not self.per_screen
         self._save_settings()
         self._notify()
+
+    def toggle_save_favorites_locally(self) -> None:
+        self.save_favorites_locally = not self.save_favorites_locally
+        self._save_settings()
+        self._notify()
+        if self.save_favorites_locally:
+            threading.Thread(
+                target=self.save_all_favorites_locally, daemon=True
+            ).start()
 
     def set_language(self, language: AppLanguage) -> None:
         self.language = language
@@ -213,12 +234,16 @@ class Store:
             self._save_favorites()
             self._set_status(Status("favoriteRemoved"))
         else:
-            self.favorites.insert(
-                0,
-                Favorite(self.current_slug, self.wallpaper_title, self.current_remote_url),
+            favorite = Favorite(
+                self.current_slug, self.wallpaper_title, self.current_remote_url
             )
+            self.favorites.insert(0, favorite)
             self._save_favorites()
             self._set_status(Status("favoriteAdded"))
+            if self.save_favorites_locally:
+                threading.Thread(
+                    target=self._save_favorite_local, args=(favorite,), daemon=True
+                ).start()
 
     def remove_favorite(self, favorite: Favorite) -> None:
         self.favorites = [f for f in self.favorites if f.slug != favorite.slug]
@@ -466,9 +491,9 @@ class Store:
             self.current_file = file
             self.preview_file = file
             self._persist_state(file.name)
-            self._set_status(Status("favoriteApplied"))
+            self._set_status(Status("favoriteApplied"), loading=False)
         except Exception as exc:  # noqa: BLE001
-            self._set_status(Status("error", str(exc)))
+            self._set_status(Status("error", str(exc)), loading=False)
 
     def assign_favorite(self, favorite: Favorite, index: int) -> None:
         monitors = wallpaper.list_monitors()
@@ -491,14 +516,46 @@ class Store:
         except Exception as exc:  # noqa: BLE001
             self._set_status(Status("error", str(exc)), loading=False)
 
-    def _ensure_favorite_file(self, favorite: Favorite) -> Path:
-        file = self.favorite_file(favorite)
-        if file.exists():
-            return file
-        self._set_status(Status("fetching", favorite.title), loading=True)
+    def _favorite_local_path(self, favorite: Favorite) -> Path:
+        return config.FAVORITES_DIR / f"{favorite.slug}.jpg"
+
+    def _ensure_favorite_file(self, favorite: Favorite, announce: bool = True) -> Path:
+        target = self._favorite_local_path(favorite)
+        if target.exists():
+            return target
+        legacy = config.IMAGE_DIR / f"{favorite.slug}.jpg"
+        if legacy.exists():
+            config.ensure_dirs()
+            shutil.copy2(legacy, target)
+            return target
+        if announce:
+            self._set_status(Status("fetching", favorite.title), loading=True)
         remote = favorite.remote_url or detail_4k_url(favorite.slug, self.session)
-        download(remote, file, self.session)
-        return file
+        download(remote, target, self.session)
+        return target
+
+    def _save_favorite_local(self, favorite: Favorite) -> None:
+        try:
+            self._set_status(Status("savingFavorite", favorite.title), loading=True)
+            self._ensure_favorite_file(favorite, announce=False)
+            self._set_status(Status("favoriteSaved"), loading=False)
+        except Exception as exc:  # noqa: BLE001
+            self._set_status(Status("error", str(exc)), loading=False)
+
+    def save_all_favorites_locally(self) -> None:
+        favorites = list(self.favorites)
+        if not favorites:
+            return
+        total = len(favorites)
+        saved = 0
+        for index, favorite in enumerate(favorites, start=1):
+            self._set_status(Status("savingFavorites", index, total), loading=True)
+            try:
+                self._ensure_favorite_file(favorite, announce=False)
+                saved += 1
+            except Exception:  # noqa: BLE001
+                continue
+        self._set_status(Status("favoritesSaved", saved), loading=False)
 
     # ----------------------------------------------------------- bakgrunn
     def _apply_single(self, file: Path) -> None:
