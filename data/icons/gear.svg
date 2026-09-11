@@ -1,6 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-  <circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/>
-  <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-    <path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.2 5.2l1.9 1.9M16.9 16.9l1.9 1.9M18.8 5.2l-1.9 1.9M7.1 16.9l-1.9 1.9"/>
-  </g>
+  <defs>
+    <mask id="gear">
+      <rect width="24" height="24" fill="#000000"/>
+      <g fill="#ffffff">
+        <circle cx="12" cy="12" r="6.6"/>
+        <rect x="10.8" y="0.5" width="2.4" height="5.2" rx="0.9"/>
+        <rect x="10.8" y="0.5" width="2.4" height="5.2" rx="0.9" transform="rotate(45 12 12)"/>
+        <rect x="10.8" y="0.5" width="2.4" height="5.2" rx="0.9" transform="rotate(90 12 12)"/>
+        <rect x="10.8" y="0.5" width="2.4" height="5.2" rx="0.9" transform="rotate(135 12 12)"/>
+        <rect x="10.8" y="0.5" width="2.4" height="5.2" rx="0.9" transform="rotate(180 12 12)"/>
+        <rect x="10.8" y="0.5" width="2.4" height="5.2" rx="0.9" transform="rotate(225 12 12)"/>
+        <rect x="10.8" y="0.5" width="2.4" height="5.2" rx="0.9" transform="rotate(270 12 12)"/>
+        <rect x="10.8" y="0.5" width="2.4" height="5.2" rx="0.9" transform="rotate(315 12 12)"/>
+      </g>
+      <circle cx="12" cy="12" r="2.7" fill="#000000"/>
+    </mask>
+  </defs>
+  <rect width="24" height="24" fill="currentColor" mask="url(#gear)"/>
 </svg>

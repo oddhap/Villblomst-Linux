@@ -66,7 +66,7 @@ class MainWindow(Adw.ApplicationWindow):
         badge = Gtk.Box()
         badge.add_css_class("app-badge")
         badge.set_valign(Gtk.Align.CENTER)
-        flower = icons.image("flower", "#ffffff", 30)
+        flower = icons.image("daisy", "#ffffff", 34)
         flower.set_halign(Gtk.Align.CENTER)
         flower.set_valign(Gtk.Align.CENTER)
         badge.append(flower)
@@ -107,7 +107,7 @@ class MainWindow(Adw.ApplicationWindow):
         gear_button = Gtk.Button()
         gear_button.add_css_class("icon-btn")
         gear_button.set_tooltip_text(self.loc.t("settings.help"))
-        gear_button.set_child(icons.image("gear", config.LEAF_DEEP, 18))
+        gear_button.set_child(icons.image("gear", config.LEAF_DEEP, 20))
         gear_button.connect("clicked", self._open_settings)
         box.append(gear_button)
 
@@ -283,7 +283,7 @@ class MainWindow(Adw.ApplicationWindow):
                 icons.pixbuf(
                     "heart" if is_favorite else "heart-outline",
                     config.BLOSSOM if is_favorite else "#ffffff",
-                    20,
+                    22,
                 )
             )
             self._favorite_state = is_favorite
@@ -294,6 +294,6 @@ class MainWindow(Adw.ApplicationWindow):
             icons.pixbuf(
                 "heart" if store.favorites else "heart-outline",
                 config.BLOSSOM if store.favorites else config.LEAF_DEEP,
-                18,
+                20,
             )
         )
